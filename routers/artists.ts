@@ -1,10 +1,11 @@
 import express from 'express';
 import Artist from '../models/Artist';
 import { imagesUpload } from '../multer';
+import { mongo } from 'mongoose';
 
 const artistsRouter = express.Router();
 
-artistsRouter.get('/', async (req, res, next) => {
+artistsRouter.get('/', async (_req, res, next) => {
   try {
     const artists = await Artist.find();
     return res.send(artists);
@@ -33,12 +34,15 @@ artistsRouter.post(
 
       return res.send(artist);
     } catch (error) {
+      if (error instanceof mongo.MongoServerError && error.code === 11000) {
+        return res.status(422).send({ error: 'Artist name should be unique!' });
+      }
       next(error);
     }
   }
 );
 
-artistsRouter.delete('/', async (req, res) => {
+artistsRouter.delete('/', async (_req, res) => {
   await Artist.deleteMany();
   return res.send('deleted');
 });
