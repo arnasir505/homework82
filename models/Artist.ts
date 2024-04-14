@@ -8,7 +8,7 @@ const ArtistSchema = new Schema(
       unique: true,
     },
     information: String,
-    img: String || null,
+    image: String || null,
   },
   {
     versionKey: false,

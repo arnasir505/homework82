@@ -9,7 +9,7 @@ artistsRouter.get('/', async (req, res, next) => {
     const artists = await Artist.find();
     return res.send(artists);
   } catch (error) {
-    next(error)
+    next(error);
   }
 });
 
@@ -25,7 +25,7 @@ artistsRouter.post(
       const artistData = {
         name: req.body.name,
         information: req.body.information || null,
-        img: req.file ? req.file.filename : null,
+        image: req.file ? req.file.filename : null,
       };
 
       const artist = new Artist(artistData);
@@ -37,5 +37,10 @@ artistsRouter.post(
     }
   }
 );
+
+artistsRouter.delete('/', async (req, res) => {
+  await Artist.deleteMany();
+  return res.send('deleted');
+});
 
 export default artistsRouter;
