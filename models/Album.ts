@@ -14,7 +14,7 @@ const AlbumSchema = new Schema(
       type: String,
       required: true,
     },
-    img: String || null,
+    image: String || null,
   },
   {
     versionKey: false,
