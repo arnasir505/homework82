@@ -1,4 +1,5 @@
-import { Schema, model } from 'mongoose';
+import { Schema, Types, model } from 'mongoose';
+import Artist from './Artist';
 
 const AlbumSchema = new Schema(
   {
@@ -7,8 +8,16 @@ const AlbumSchema = new Schema(
       required: true,
     },
     artist: {
-      type: String,
+      type: Schema.Types.ObjectId,
+      ref: 'Artist',
       required: true,
+      validate: {
+        validator: async (id: Types.ObjectId) => {
+          const artist = await Artist.findById(id);
+          return Boolean(artist);
+        },
+        message: 'Artist does not exist.',
+      },
     },
     year: {
       type: String,
