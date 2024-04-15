@@ -1,4 +1,5 @@
-import { Schema, model } from 'mongoose';
+import { Schema, Types, model } from 'mongoose';
+import Album from './Album';
 
 const TrackSchema = new Schema(
   {
@@ -7,8 +8,13 @@ const TrackSchema = new Schema(
       required: true,
     },
     album: {
-      type: String,
+      type: Schema.Types.ObjectId,
+      ref: 'Album',
       required: true,
+      validate: {
+        validator: async (id: Types.ObjectId) => Album.findById(id),
+        message: 'Album does not exist.',
+      },
     },
     duration: {
       type: String,
