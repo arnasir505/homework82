@@ -4,8 +4,13 @@ import { imagesUpload } from '../multer';
 
 const albumsRouter = express.Router();
 
-albumsRouter.get('/', async (_req, res, next) => {
+albumsRouter.get('/', async (req, res, next) => {
   try {
+    const artistId = req.query.artist;
+    if (artistId) {
+      const albums = await Album.find({artist: artistId.toString()});
+      return res.send(albums)
+    }
     const albums = await Album.find();
     return res.send(albums);
   } catch (error) {
