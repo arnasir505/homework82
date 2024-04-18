@@ -18,6 +18,12 @@ const UserSchema = new Schema<UserFields>(
   }
 );
 
+UserSchema.pre('save', function(next) {
+  console.log('Password hashed');
+  this.password = 'hashed pwd'
+  next();
+})
+
 const User = model('User', UserSchema);
 
 export default User;
