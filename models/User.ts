@@ -1,5 +1,8 @@
+import bcrypt from 'bcrypt';
 import { Schema, model } from 'mongoose';
 import { UserFields } from '../types';
+
+const SALT_WORK_FACTOR = 10;
 
 const UserSchema = new Schema<UserFields>(
   {
@@ -11,18 +14,31 @@ const UserSchema = new Schema<UserFields>(
     password: {
       type: String,
       required: true,
-    }
+    },
   },
   {
     versionKey: false,
   }
 );
 
-UserSchema.pre('save', function(next) {
-  console.log('Password hashed');
-  this.password = 'hashed pwd'
+UserSchema.pre('save', async function (next) {
+  if (!this.isModified('password')) {
+    return next();
+  }
+
+  const salt = await bcrypt.genSalt(SALT_WORK_FACTOR);
+  const hash = await bcrypt.hash(this.password, salt);
+  this.password = hash;
+
   next();
-})
+});
+
+UserSchema.set('toJSON', {
+  transform(_doc, ret, _options) {
+    delete ret.password;
+    return ret;
+  },
+});
 
 const User = model('User', UserSchema);
 
