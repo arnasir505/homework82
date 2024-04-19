@@ -1,11 +1,13 @@
 import bcrypt from 'bcrypt';
 import { Model, Schema, model } from 'mongoose';
 import { UserFields } from '../types';
+import { randomUUID } from 'crypto';
 
 const SALT_WORK_FACTOR = 10;
 
 interface UserMethods {
   checkPassword(password: string): Promise<boolean>;
+  generateToken(): void;
 }
 
 type UserModel = Model<UserFields, {}, UserMethods>;
@@ -21,6 +23,10 @@ const UserSchema = new Schema<UserFields, UserModel>(
       type: String,
       required: true,
     },
+    token: {
+      type: String,
+      required: true,
+    },
   },
   {
     versionKey: false,
@@ -29,6 +35,10 @@ const UserSchema = new Schema<UserFields, UserModel>(
 
 UserSchema.method('checkPassword', async function (password: string) {
   return await bcrypt.compare(password, this.password);
+});
+
+UserSchema.method('generateToken', function () {
+  this.token = randomUUID();
 });
 
 UserSchema.pre('save', async function (next) {

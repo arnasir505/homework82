@@ -10,6 +10,9 @@ usersRouter.post('/', async (req, res, next) => {
       username: req.body.username,
       password: req.body.password,
     });
+
+    user.generateToken();
+
     await user.save();
     return res.send(user);
   } catch (error) {
@@ -33,15 +36,19 @@ usersRouter.post('/sessions', async (req, res, next) => {
         .send({ error: 'Username or password is not correct' });
     }
 
+    
     const isMatch = await user.checkPassword(req.body.password);
-
+    
     if (!isMatch) {
       return res
-        .status(400)
-        .send({ error: 'Username or password is not correct' });
+      .status(400)
+      .send({ error: 'Username or password is not correct' });
     }
 
-    return res.send({ message: 'Username and password correct!' });
+    user.generateToken();
+    await user.save();
+
+    return res.send({ message: 'Username and password correct!', user });
   } catch (error) {
     if (error instanceof mongoose.Error.ValidationError) {
       return res.status(422).send(error);
