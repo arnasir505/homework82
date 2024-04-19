@@ -7,7 +7,6 @@ const TrackHistorySchema = new Schema(
     user: {
       type: Schema.Types.ObjectId,
       ref: 'User',
-      required: true,
       validate: {
         validator: async (id: Types.ObjectId) => User.findById(id),
         message: 'User does not exist.',
@@ -22,10 +21,7 @@ const TrackHistorySchema = new Schema(
         message: 'Track does not exist.',
       },
     },
-    datetime: {
-      type: String,
-      required: true,
-    },
+    datetime: String,
   },
   {
     versionKey: false,
