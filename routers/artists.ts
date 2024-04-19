@@ -43,9 +43,4 @@ artistsRouter.post(
   }
 );
 
-artistsRouter.delete('/', async (_req, res) => {
-  await Artist.deleteMany();
-  return res.send('deleted');
-});
-
 export default artistsRouter;

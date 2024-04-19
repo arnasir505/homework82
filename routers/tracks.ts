@@ -50,9 +50,4 @@ tracksRouter.post('/', async (req, res, next) => {
   }
 });
 
-tracksRouter.delete('/', async (_req, res) => {
-  await Track.deleteMany();
-  return res.send('deleted');
-});
-
 export default tracksRouter;

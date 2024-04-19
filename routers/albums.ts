@@ -66,9 +66,4 @@ albumsRouter.post('/', imagesUpload.single('image'), async (req, res, next) => {
   }
 });
 
-albumsRouter.delete('/', async (_req, res) => {
-  await Album.deleteMany();
-  return res.send('deleted');
-});
-
 export default albumsRouter;
